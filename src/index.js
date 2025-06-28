@@ -1,17 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react';
-import { createRoot } from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 
 const container = document.getElementById('root');
-const root = createRoot(container);
+const root = ReactDOM.createRoot(container);
 
-
-
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <HashRouter>
+root.render(
+  <BrowserRouter>
     <App />
-  </HashRouter>
+  </BrowserRouter>
 );
