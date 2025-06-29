@@ -15,7 +15,9 @@ function Login({ setToken }) {
       setToken(res.data.token);
 ;
       alert('Login successful!');
-      navigate('/');
+      localStorage.setItem('token', res.data.token);
+      window.location.href = '/';
+
     } catch (error) {
       alert(error.response.data.message);
     }
