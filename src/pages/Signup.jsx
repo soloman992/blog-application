@@ -13,7 +13,7 @@ function Signup() {
     try {
       await axios.post('https://blog-backend-t8ey.onrender.com/api/users/register', { username, email, password });
       alert('Signup successful!');
-      window.location.href = '/blog-application/login';
+      window.location.href = '/blog-application/#/login';
 
     } catch (error) {
       alert(error.response.data.message);
