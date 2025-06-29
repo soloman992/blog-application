@@ -20,8 +20,9 @@ function Home() {
       {posts.map(post => (
         <div key={post._id} style={{ border: '1px solid gray', margin: '10px 0', padding: '10px' }}>
           <h3>{post.title}</h3>
-          <p>{post.content}</p>
+          <p>{post.content.substring(0, 100)}....</p>
           <p><strong>Author:</strong> {post.author?.username || 'Unknown'}</p>
+          <Link to={`/posts/${post._id}`}>Read More</Link>
         </div>
       ))}
     </div>

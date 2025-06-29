@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import CreatePost from './pages/CreatePost';
 import Navbar from './components/Navbar';
 import Profile from './pages/Profile';
+import ViewPost from './pages/ViewPost';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/create" element={<CreatePost token={token} />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/posts/:id" element={<ViewPost />} />
       </Routes>
     </div>
   );
