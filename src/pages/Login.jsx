@@ -16,7 +16,7 @@ function Login({ setToken }) {
 ;
       alert('Login successful!');
       localStorage.setItem('token', res.data.token);
-      window.location.href = '/';
+      window.location.href = '/blog-application/';
 
     } catch (error) {
       alert(error.response.data.message);

@@ -17,14 +17,13 @@ function Navbar() {
     const handleLogout = () => {
         localStorage.removeItem('token');
         setIsLoggedIn(false);
-        navigate('/login');
+        // navigate('/login');
+        window.location.href = '/blog-application/';
     };
 
     return (
         <nav>
             <NavLink to="/">Home</NavLink>
-            {/* <NavLink to="/about">About</NavLink>
-            <NavLink to="/projects">Projects</NavLink> */}
 
             {isLoggedIn && (
                 <>
