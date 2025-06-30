@@ -3,40 +3,25 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function ViewPost() {
-    const { id } = useParams();
-    const [post, setPost] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+  const { id } = useParams();
+  const [post, setPost] = useState(null);
 
-    useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                const res = await axios.get(`http://blog-backend-t8ey.onrender.com/api/posts/${id}`);
-                if (!res.data || res.data === null) { // Add this check
-                    setError('Post not found');
-                } else {
-                    setPost(res.data);
-                }
-            } catch (err) {
-                setError('Post not found');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPost();
-    }, [id]);
+  useEffect(() => {
+    axios.get(`https://blog-backend-t8ey.onrender.com/api/posts/${id}`)
+      .then(res => setPost(res.data))
+      .catch(err => console.error(err));
+  }, [id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>{error}</p>;
-    if (!post) return <p>No post data available.</p>; // Extra safety
+  if (!post) return <p>Loading…</p>;
 
-    return (
-        <div className="single-post">
-            <h1>{post.title}</h1>
-            <p>By {post.author?.username || 'Unknown'} on {new Date(post.createdAt).toLocaleDateString()}</p>
-            <div dangerouslySetInnerHTML={{ __html: post.content }}></div>
-        </div>
-    );
+  return (
+    <div className="container">
+      <h1>{post.title}</h1>
+      <p>by {post.author?.username}</p>
+      {/* If you store HTML content: */}
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+    </div>
+  );
 }
 
 export default ViewPost;
