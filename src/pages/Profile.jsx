@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
 
 function Profile() {
   const [posts, setPosts] = useState([]);
@@ -54,6 +55,7 @@ function Profile() {
             <h3>{post.title}</h3>
             <p>{post.content}</p>
             <button onClick={() => handleDelete(post._id)}>Delete</button> {/* 🔥 Add Delete Button */}
+            <NavLink to={`/posts/${post._id}/edit`}>Edit</NavLink>
           </div>
         ))
       )}

@@ -7,6 +7,8 @@ import CreatePost from './pages/CreatePost';
 import Navbar from './components/Navbar';
 import Profile from './pages/Profile';
 import ViewPost from './pages/ViewPost';
+import EditPost from './pages/EditPost';
+import '../node_modules/@syncfusion/ej2-react-documenteditor/styles/material.css';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -21,6 +23,7 @@ function App() {
         <Route path="/create" element={<CreatePost token={token} />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/posts/:id" element={<ViewPost />} />
+        <Route path="/posts/:id/edit" element={<EditPost />} />
       </Routes>
     </div>
   );
