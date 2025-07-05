@@ -1,47 +1,41 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { DocumentEditorContainerComponent, Toolbar } from '@syncfusion/ej2-react-documenteditor';
+import RichEditor from '../components/RichEditor';
 import UploadIMG from '../components/UploadIMG';
-
-DocumentEditorContainerComponent.Inject(Toolbar);
 
 function EditPost() {
     const { id } = useParams();
     const nav = useNavigate();
-    const editorRef = useRef(null);
-
     const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [originalContent, setOriginalContent] = useState('');
+    const [message, setMessage] = useState('');
 
     useEffect(() => {
         axios.get(`https://blog-backend-t8ey.onrender.com/api/posts/${id}`)
             .then(res => {
                 setTitle(res.data.title);
+                setContent(res.data.content);
                 setImageUrl(res.data.imageUrl);
-                setOriginalContent(res.data.content);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error('Error fetching post:', err));
     }, [id]);
-
-    // Load the document into the editor after it is rendered
-    useEffect(() => {
-        if (editorRef.current && originalContent) {
-            editorRef.current.documentEditor.open(originalContent);
-        }
-    }, [originalContent]);
 
     const handleSave = async (e) => {
         e.preventDefault();
 
-        // Serialize the updated content
-        const updatedContent = editorRef.current.documentEditor.serialize();
+        if (!content || content.trim() === '') {
+            alert('Post content cannot be empty!');
+            return;
+        }
 
         try {
             await axios.put(`https://blog-backend-t8ey.onrender.com/api/posts/${id}`,
-                { title, content: updatedContent, imageUrl },
-                { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+                { title, content, imageUrl },
+                {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                }
             );
             nav(`/posts/${id}`);
         } catch (err) {
@@ -53,27 +47,33 @@ function EditPost() {
     return (
         <div className="container" style={{ padding: '20px' }}>
             <h2>Edit Post</h2>
-            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {message && <p>{message}</p>}
+            <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '90%' }}>
                 <input
+                    type="text"
                     value={title}
                     onChange={e => setTitle(e.target.value)}
-                    placeholder="Post Title"
+                    required
                     style={{ padding: '10px' }}
                 />
 
-                {/* Document Editor */}
-                <DocumentEditorContainerComponent
-                    id="edit-container"
-                    ref={editorRef}
-                    height={'590px'}
-                    serviceUrl="https://ej2services.syncfusion.com/production/web-services/api/documenteditor/"
-                    enableToolbar={true}
-                />
+                {/* ✅ Rich Text Editor */}
+                <RichEditor value={content} onChange={setContent} />
 
+                {/* ✅ Image Uploader */}
                 <UploadIMG setImageUrl={setImageUrl} />
 
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
-                    Save
+                <button
+                    type="submit"
+                    style={{
+                        padding: '10px',
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        border: 'none',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Save Changes
                 </button>
             </form>
         </div>

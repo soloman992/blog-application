@@ -12,6 +12,11 @@ function CreatePost({ token }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!content.trim()) {
+            alert('Post content cannot be empty!');
+            return;
+        }
+
         try {
             await axios.post('https://blog-backend-t8ey.onrender.com/api/posts', {
                 title,
@@ -21,7 +26,7 @@ function CreatePost({ token }) {
 
             setMessage('Post created successfully!');
             setTitle('');
-            setContent(''); // You can optionally reset the editor later
+            setContent('');
         } catch (err) {
             console.error('Full Error:', err.response || err);
             setMessage('Error creating post');
@@ -41,12 +46,20 @@ function CreatePost({ token }) {
                     required
                     style={{ padding: '10px' }}
                 />
-                {/* ✅ Pass content change handler */}
-                <RichEditor onContentChange={setContent} />
+                <RichEditor value={content} onChange={setContent} />
 
                 <UploadIMG setImageUrl={setImageUrl} />
 
-                <button type="submit" style={{ padding: '10px', backgroundColor: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
+                <button
+                    type="submit"
+                    style={{
+                        padding: '10px',
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        cursor: 'pointer',
+                    }}
+                >
                     Create Post
                 </button>
             </form>

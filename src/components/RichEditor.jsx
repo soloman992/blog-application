@@ -1,25 +1,13 @@
-import { useRef, useEffect } from 'react';
-import { DocumentEditorContainerComponent, Toolbar } from '@syncfusion/ej2-react-documenteditor';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.snow.css';
 
-DocumentEditorContainerComponent.Inject(Toolbar);
-
-function RichEditor({ onContentChange }) {
-    const editorRef = useRef(null);
-
-    // Listen for document changes and pass content to parent
-    const handleDocumentChange = () => {
-        const content = editorRef.current?.documentEditor?.serialize();
-        onContentChange(content);
-    };
-
+function RichEditor({ value, onChange }) {
     return (
-        <DocumentEditorContainerComponent
-            id="container"
-            ref={editorRef}
-            height={'590px'}
-            serviceUrl="https://ej2services.syncfusion.com/production/web-services/api/documenteditor/"
-            enableToolbar={true}
-            documentChange={handleDocumentChange} // Listen to document changes
+        <ReactQuill
+            theme="snow"
+            value={value}
+            onChange={onChange}
+            style={{ minHeight: '150px', marginBottom: '20px' }}
         />
     );
 }
