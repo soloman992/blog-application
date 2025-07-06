@@ -1,49 +1,127 @@
-import { AppProvider } from "@toolpad/core/AppProvider";
-import { SignInPage } from "@toolpad/core/SignInPage";
-import { useTheme } from "@mui/material/styles";
-import { Button } from "@mui/material";
+import React, { useState } from "react";
 import axios from "axios";
-
-const providers = [{ id: "credentials", name: "Email and Password" }];
-
-const signIn = async (provider, formData) => {
-  const email = formData.get("email");
-  const password = formData.get("password");
-
-  try {
-    const res = await axios.post(
-      "https://blog-backend-t8ey.onrender.com/api/users/login",
-      { email, password }
-    );
-    localStorage.setItem("token", res.data.token);
-    alert("Login successful!");
-    window.location.href = "/blog-application/";
-  } catch (error) {
-    alert(error.response?.data?.message || "Login failed");
-  }
-};
+import { useNavigate } from "react-router-dom";
+import { Box, TextField, Button, Typography } from "@mui/material";
 
 function Login() {
-  const theme = useTheme();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        "https://blog-backend-t8ey.onrender.com/api/users/login",
+        { email, password }
+      );
+
+      localStorage.setItem("token", res.data.token);
+      alert("Login successful!");
+      navigate("/");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response?.data?.message || "Login failed");
+    }
+  };
 
   return (
-    <AppProvider theme={theme}>
-      <SignInPage
-        signIn={signIn}
-        providers={providers}
-        slots={{
-          submitButton: (props) => (
-            <Button {...props} variant="outlined" sx={{border: "1px solid #000", color: "#000", "&:hover":{color: "#fff"}}}>
-              Log in now
-            </Button>
-          ),
+    <Box
+      sx={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 396,
+        margin: "auto",
+        mt: 8,
+        p: 4,
+        boxShadow: 3,
+        borderRadius: 2,
+        bgcolor: "background.paper",
+      }}
+    >
+      <Typography
+        variant="h5"
+        textAlign="center"
+        gutterBottom
+        sx={{
+          fontSize: "1.5rem",
+          fontWeight: 700,
+          fontFamily: "Roboto, Helvetica, Arial, sans-serif",
         }}
-        slotProps={{
-          emailField: { autoFocus: true },
-          form: { noValidate: true },
-        }}
-      />
-    </AppProvider>
+      >
+        Login
+      </Typography>
+
+      <form onSubmit={handleLogin}>
+        <TextField
+          fullWidth
+          required
+          type="email"
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoFocus
+          sx={{
+            mb: 2,
+            "& .MuiInputBase-root": { height: 39 },
+            "& input": {
+              padding: "0 14px",
+              height: "100%",
+              boxSizing: "border-box",
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              top: "-7px",
+            },
+          }}
+        />
+
+        <TextField
+          fullWidth
+          required
+          type="password"
+          label="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{
+            mb: 2,
+            "& .MuiInputBase-root": { height: 39 },
+            "& input": {
+              padding: "0 14px",
+              height: "100%",
+              boxSizing: "border-box",
+            },
+          }}
+          InputLabelProps={{
+            sx: {
+              top: "-7px",
+            },
+          }}
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="outlined"
+          sx={{
+            mt: 3,
+            py: 1,
+            fontWeight: "normal",
+            border: "1px solid #000",
+            color: "#000",
+            "&:hover": {
+              backgroundColor: "#1976d2", // Optional: blue hover
+              color: "#fff",
+            },
+          }}
+        >
+          LOGIN
+        </Button>
+      </form>
+    </Box>
   );
 }
 
