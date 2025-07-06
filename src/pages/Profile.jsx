@@ -15,7 +15,6 @@ function Profile() {
         const res = await axios.get(
           "https://blog-backend-t8ey.onrender.com/api/posts/mine",
           {
-            // update to your live backend url
             headers: { Authorization: `Bearer ${token}` },
           }
         );
@@ -32,7 +31,6 @@ function Profile() {
     fetchMyPosts();
   }, []);
 
-  // 👉 Delete Post Handler
   const handleDelete = async (postId) => {
     const token = localStorage.getItem("token");
     if (!token) return alert("Login first!");
@@ -41,11 +39,10 @@ function Profile() {
       await axios.delete(
         `https://blog-backend-t8ey.onrender.com/api/posts/${postId}`,
         {
-          // update to your live backend url
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setPosts(posts.filter((post) => post._id !== postId)); // Remove from UI
+      setPosts(posts.filter((post) => post._id !== postId));
     } catch (err) {
       console.error(err);
       alert("Failed to delete post");
@@ -53,14 +50,11 @@ function Profile() {
   };
 
   const stripHtmlTags = (html) => {
-    // Replace <br> and <p> with newlines for proper spacing
     let formatted = html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n");
 
-    // Remove remaining HTML tags
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = formatted;
 
-    // Return text with proper line breaks
     return (tempDiv.textContent || tempDiv.innerText || "")
       .replace(/\n+/g, " ")
       .trim();

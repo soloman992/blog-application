@@ -1,37 +1,49 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { AppProvider } from "@toolpad/core/AppProvider";
+import { SignInPage } from "@toolpad/core/SignInPage";
+import { useTheme } from "@mui/material/styles";
+import { Button } from "@mui/material";
+import axios from "axios";
 
-function Login({ setToken }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+const providers = [{ id: "credentials", name: "Email and Password" }];
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('https://blog-backend-t8ey.onrender.com/api/users/login', { email, password });
-      localStorage.setItem('token', res.data.token)
-      setToken(res.data.token);
-;
-      alert('Login successful!');
-      localStorage.setItem('token', res.data.token);
-      window.location.href = '/blog-application/';
+const signIn = async (provider, formData) => {
+  const email = formData.get("email");
+  const password = formData.get("password");
 
-    } catch (error) {
-      alert(error.response.data.message);
-    }
-  };
+  try {
+    const res = await axios.post(
+      "https://blog-backend-t8ey.onrender.com/api/users/login",
+      { email, password }
+    );
+    localStorage.setItem("token", res.data.token);
+    alert("Login successful!");
+    window.location.href = "/blog-application/";
+  } catch (error) {
+    alert(error.response?.data?.message || "Login failed");
+  }
+};
+
+function Login() {
+  const theme = useTheme();
 
   return (
-    <div className="container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <AppProvider theme={theme}>
+      <SignInPage
+        signIn={signIn}
+        providers={providers}
+        slots={{
+          submitButton: (props) => (
+            <Button {...props} variant="outlined" sx={{border: "1px solid #000", color: "#000", "&:hover":{color: "#fff"}}}>
+              Log in now
+            </Button>
+          ),
+        }}
+        slotProps={{
+          emailField: { autoFocus: true },
+          form: { noValidate: true },
+        }}
+      />
+    </AppProvider>
   );
 }
 
