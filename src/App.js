@@ -9,22 +9,50 @@ import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import ViewPost from "./pages/ViewPost";
 import EditPost from "./pages/EditPost";
+import useAutoLogout from "./hooks/useAutoLogout";
+import RequireAuth from "./components/RequireAuth";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
+
+  useAutoLogout(30);
 
   return (
     <div className="App">
       <Navbar />
       <Container>
         <Routes>
+          {/* ✅ Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
-          <Route path="/create" element={<CreatePost token={token} />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/posts/:id" element={<ViewPost />} />
-          <Route path="/posts/:id/edit" element={<EditPost />} />
+
+          {/* ✅ Protected routes */}
+          <Route
+            path="/create"
+            element={
+              <RequireAuth>
+                <CreatePost token={token} />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth>
+                <Profile />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/posts/:id/edit"
+            element={
+              <RequireAuth>
+                <EditPost />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </Container>
     </div>
