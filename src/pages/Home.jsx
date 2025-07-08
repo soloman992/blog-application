@@ -1,55 +1,44 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import PostCard from "../components/PostCard"; // adjust path as needed
 
 function Home() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await axios.get(
-        "https://blog-backend-t8ey.onrender.com/api/posts"
-      );
-      setPosts(res.data);
+      try {
+        const res = await axios.get(
+          "https://blog-backend-t8ey.onrender.com/api/posts"
+        );
+        setPosts(res.data);
+      } catch (err) {
+        console.error("Failed to fetch posts:", err);
+      }
     };
     fetchPosts();
   }, []);
 
-  const stripHtmlTags = (html) => {
-    // Replace <br> and <p> with newlines for proper spacing
-    let formatted = html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n");
-
-    // Remove remaining HTML tags
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = formatted;
-
-    // Return text with proper line breaks
-    return (tempDiv.textContent || tempDiv.innerText || "")
-      .replace(/\n+/g, " ")
-      .trim();
-  };
-
   return (
     <div className="container">
-      <h2>All Blog Posts</h2>
-      {posts.length === 0 && <p>No posts available</p>}
-      {posts.map((post) => (
-        <div
-          key={post._id}
-          style={{
-            border: "1px solid gray",
-            margin: "10px 0",
-            padding: "10px",
-          }}
-        >
-          <h3>{post.title}</h3>
-          <p>{stripHtmlTags(post.content).substring(0, 100)}...</p>
-          <p>
-            <strong>Author:</strong> {post.author?.username || "Unknown"}
-          </p>
-          <Link to={`/posts/${post._id}`}>Read More</Link>
-        </div>
-      ))}
+      <h2 style={{ textAlign: "center", marginTop: "20px" }}>All Blog Posts</h2>
+      {posts.length === 0 && (
+        <p style={{ textAlign: "center" }}>No posts available</p>
+      )}
+
+      <div
+        style={{
+          padding: "20px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "25px",
+          justifyContent: "center",
+        }}
+      >
+        {posts.map((post) => (
+          <PostCard key={post._id} post={post} showReadMore={true} />
+        ))}
+      </div>
     </div>
   );
 }

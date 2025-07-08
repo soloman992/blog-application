@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import PostCard from "../components/PostCard"; // Adjust the path
 
 function Profile() {
   const [posts, setPosts] = useState([]);
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMyPosts = async () => {
@@ -12,12 +14,9 @@ function Profile() {
       if (!token) return alert("Login first!");
 
       try {
-        const res = await axios.get(
-          "https://blog-backend-t8ey.onrender.com/api/posts/mine",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await axios.get("https://blog-backend-t8ey.onrender.com/api/posts/mine", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setPosts(res.data);
         if (res.data.length > 0) {
           setUsername(res.data[0].author.username);
@@ -36,12 +35,9 @@ function Profile() {
     if (!token) return alert("Login first!");
 
     try {
-      await axios.delete(
-        `https://blog-backend-t8ey.onrender.com/api/posts/${postId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await axios.delete(`https://blog-backend-t8ey.onrender.com/api/posts/${postId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPosts(posts.filter((post) => post._id !== postId));
     } catch (err) {
       console.error(err);
@@ -49,31 +45,44 @@ function Profile() {
     }
   };
 
-  const stripHtmlTags = (html) => {
-    let formatted = html.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n");
+  const handleView = (postId) => {
+    navigate(`/posts/${postId}`);
+  };
 
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = formatted;
-
-    return (tempDiv.textContent || tempDiv.innerText || "")
-      .replace(/\n+/g, " ")
-      .trim();
+  const handleEdit = (postId) => {
+    navigate(`/posts/${postId}/edit`);
   };
 
   return (
     <div className="container">
-      <h2>{username ? `${username}'s Profile` : "Your Blog Posts"}</h2>
+      <h2 style={{ textAlign: "center", margin: "20px 0" }}>
+        {username ? `${username}'s Profile` : "Your Blog Posts"}
+      </h2>
+
       {posts.length === 0 ? (
         <p>No posts yet</p>
       ) : (
-        posts.map((post) => (
-          <div className="blog-post" key={post._id}>
-            <h3>{post.title}</h3>
-            <p>{stripHtmlTags(post.content)}</p>
-            <button onClick={() => handleDelete(post._id)}>Delete</button>{" "}
-            <NavLink to={`/posts/${post._id}/edit`}>Edit</NavLink>
-          </div>
-        ))
+        <div
+          style={{
+            padding: "20px",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "25px",
+            justifyContent: "center",
+          }}
+        >
+          {posts.map((post) => (
+          <PostCard
+            key={post._id}
+            post={post}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onView={handleView}
+            showActions={true}
+            showReadMore={false}
+          />
+        ))}
+        </div>
       )}
     </div>
   );

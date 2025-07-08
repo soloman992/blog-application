@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -68,7 +68,6 @@ function Navbar(props) {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");

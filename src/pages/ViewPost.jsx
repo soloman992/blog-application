@@ -5,14 +5,27 @@ import axios from 'axios';
 function ViewPost() {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         axios.get(`https://blog-backend-t8ey.onrender.com/api/posts/${id}`)
-            .then(res => setPost(res.data))
-            .catch(err => console.error(err));
+            .then(res => {
+                if (res.data && res.data._id) {
+                    setPost(res.data);
+                } else {
+                    setError('Post not found');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                setError('Error loading post');
+            });
     }, [id]);
 
+    if (error) return <p>{error}</p>;
     if (!post) return <p>Loading…</p>;
+    console.log(post.imageUrl);
+
 
     return (
         <div className="container">

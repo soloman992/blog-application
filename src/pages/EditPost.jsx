@@ -10,7 +10,7 @@ function EditPost() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [imageUrl, setImageUrl] = useState('');
-    const [message, setMessage] = useState('');
+    const [message] = useState('');
 
     useEffect(() => {
         axios.get(`https://blog-backend-t8ey.onrender.com/api/posts/${id}`)
@@ -57,10 +57,8 @@ function EditPost() {
                     style={{ padding: '10px' }}
                 />
 
-                {/* ✅ Rich Text Editor */}
                 <RichEditor value={content} onChange={setContent} />
 
-                {/* ✅ Image Uploader */}
                 <UploadIMG setImageUrl={setImageUrl} />
 
                 <button
