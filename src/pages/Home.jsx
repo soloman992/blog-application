@@ -35,9 +35,14 @@ function Home() {
           justifyContent: "center",
         }}
       >
-        {posts.map((post) => (
+        {/* {posts.map((post) => (
           <PostCard key={post._id} post={post} showReadMore={true} />
-        ))}
+        ))} */}
+        {[...posts]
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // ⬅️ Sort newest to oldest
+          .map((post) => (
+            <PostCard key={post._id} post={post} />
+          ))}
       </div>
     </div>
   );

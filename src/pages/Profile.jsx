@@ -14,9 +14,12 @@ function Profile() {
       if (!token) return alert("Login first!");
 
       try {
-        const res = await axios.get("https://blog-backend-t8ey.onrender.com/api/posts/mine", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "https://blog-backend-t8ey.onrender.com/api/posts/mine",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setPosts(res.data);
         if (res.data.length > 0) {
           setUsername(res.data[0].author.username);
@@ -35,9 +38,12 @@ function Profile() {
     if (!token) return alert("Login first!");
 
     try {
-      await axios.delete(`https://blog-backend-t8ey.onrender.com/api/posts/${postId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://blog-backend-t8ey.onrender.com/api/posts/${postId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setPosts(posts.filter((post) => post._id !== postId));
     } catch (err) {
       console.error(err);
@@ -71,17 +77,19 @@ function Profile() {
             justifyContent: "center",
           }}
         >
-          {posts.map((post) => (
-          <PostCard
-            key={post._id}
-            post={post}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-            onView={handleView}
-            showActions={true}
-            showReadMore={false}
-          />
-        ))}
+          {[...posts]
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((post) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+                onView={handleView}
+                showActions={true}
+                showReadMore={false}
+              />
+            ))}
         </div>
       )}
     </div>

@@ -22,13 +22,11 @@ function App() {
       <Navbar />
       <Container>
         <Routes>
-          {/* ✅ Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login setToken={setToken} />} />
           <Route path="/posts/:id" element={<ViewPost />} />
 
-          {/* ✅ Protected routes */}
           <Route
             path="/create"
             element={
